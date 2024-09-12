@@ -10,7 +10,7 @@ interface Column {
   img?: JSX.Element;
 }
 
-interface EmpData {
+export interface EmpData {
   번호?: number;
   사원번호?: number | string;
   고유번호?: number | string;
@@ -42,7 +42,7 @@ interface EmpData {
   작업날짜?: string | number;
 }
 
-interface EmpInfo {
+export interface EmpInfo {
   columns: Column[];
   data: EmpData[];
   onRowClick?: (row: EmpData) => void;

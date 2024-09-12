@@ -1,4 +1,4 @@
-import { ResponsiveBar } from '@nivo/bar';
+import { ResponsiveBar, ComputedDatum } from '@nivo/bar';
 import { useState } from 'react';
 
 interface ChartProps {
@@ -37,7 +37,9 @@ const WorkRateAdmin = ({ data }: ChartProps) => {
           indexScale={{ type: 'band', round: true }}
           padding={0.4}
           layout="horizontal"
-          colors={({ id, data }) => data.color || '#83C5C1'}
+          colors={({ id, data }: ComputedDatum<{ [key: string]: string | number }>) =>
+            (data.color as string) || '#83C5C1'
+          }
           borderColor={{
             from: 'color',
             modifiers: [['darker', 1.6]],

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import Table from '../../components/Common/Table';
+import Table, { EmpData } from '../../components/Common/Table';
 import SearchBar from '../../components/Common/SearchBar';
 import Filter from '../../components/Common/Filter';
 import Calendar from '../../components/Common/Calendar';
@@ -7,7 +7,7 @@ import Calendar from '../../components/Common/Calendar';
 const ManageEmp = () => {
   const navigate = useNavigate();
 
-  const handleRowClick = (rowData) => {
+  const handleRowClick = (rowData: EmpData) => {
     navigate(`/employee/${rowData.사원번호}`, { state: rowData });
   };
 

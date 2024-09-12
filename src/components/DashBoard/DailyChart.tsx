@@ -2,7 +2,7 @@ import { ResponsiveLine } from '@nivo/line';
 import tooltip from '../../assets/tooltip.svg';
 
 interface ChartProps {
-  data: [];
+  data: any;
 }
 
 interface ToolTipProps {
