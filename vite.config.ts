@@ -25,12 +25,25 @@
 //   },
 // });
 
+// import { defineConfig } from 'vite';
+// import react from '@vitejs/plugin-react';
+
+// export default defineConfig({
+//   plugins: [react()],
+//   publicDir: 'public', // public 폴더 설정 확인
+//   build: {
+//     outDir: 'dist',
+//     emptyOutDir: true,
+//   },
+// });
+
+// 4트
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  publicDir: 'public', // public 폴더 설정 확인
+  base: '/', // 루트 경로로 설정
   build: {
     outDir: 'dist',
     emptyOutDir: true,
