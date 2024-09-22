@@ -1,25 +1,19 @@
 import { useEffect, useState, useCallback } from 'react';
-import instance from '../api/apiConfig';
 import SearchBar from '../components/Common/SearchBar';
 import Table from '../components/Common/Table';
 import Tab from '../components/Tab';
 import Modal from '../components/Common/Modal';
 import Toast from '../components/Common/Toast';
 import check from '../assets/check-signup-request.svg';
+import { fetchSignUpRequests, approveUsers, rejectUsers } from '../api/admin/adminApi';
 
 interface UserData {
   cursorId: number;
   name: string;
   empNo: string;
-  phoneNum: string;
+  phoneNumber: string;
   email: string;
   signUpRequestDateTime: string;
-}
-
-interface ApiResponse {
-  data: {
-    contents: UserData[];
-  };
 }
 
 interface TableData {
@@ -41,6 +35,7 @@ const SignUpRequest = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalMode, setModalMode] = useState<'approve' | 'reject' | null>(null);
   const [toast, setToast] = useState<{ mode: 'success' | 'failed'; title: string; content: string } | null>(null);
+  const [count, setCount] = useState(0);
 
   const handleCheckboxChange = useCallback((empNo: string) => {
     setSelectedEmpNos((prevSelectedEmpNos) =>
@@ -51,23 +46,29 @@ const SignUpRequest = () => {
   }, []);
 
   const handleApprove = useCallback(() => {
-    setModalMode('approve');
-    setIsModalOpen(true);
-  }, []);
+    if (selectedEmpNos.length > 0) {
+      setModalMode('approve');
+      setIsModalOpen(true);
+    }
+  }, [selectedEmpNos]);
 
   const handleReject = useCallback(() => {
-    setModalMode('reject');
-    setIsModalOpen(true);
-  }, []);
+    if (selectedEmpNos.length > 0) {
+      setModalMode('reject');
+      setIsModalOpen(true);
+    }
+  }, [selectedEmpNos]);
 
   const confirmApprove = useCallback(async () => {
     if (selectedEmpNos.length > 0) {
       try {
-        const response = await instance.post('/api/v1/admin/approve-user', {
-          userList: selectedEmpNos.map((empNo) => ({ empNo })),
-        });
+        const response = await approveUsers(selectedEmpNos);
+
         console.log('API 호출 성공', response.data);
+
+        setUserData((prevUserData) => prevUserData.filter((user) => !selectedEmpNos.includes(user.empNo)));
         setIsModalOpen(false);
+        setSelectedEmpNos([]);
         setToast({
           mode: 'success',
           title: '승인 완료',
@@ -87,11 +88,12 @@ const SignUpRequest = () => {
   const confirmReject = useCallback(async () => {
     if (selectedEmpNos.length > 0) {
       try {
-        const response = await instance.post('/api/v1/admin/reject-user', {
-          userList: selectedEmpNos.map((empNo) => ({ empNo })),
-        });
+        const response = await rejectUsers(selectedEmpNos);
         console.log('API 호출 성공', response.data);
+
+        setUserData((prevUserData) => prevUserData.filter((user) => !selectedEmpNos.includes(user.empNo)));
         setIsModalOpen(false);
+        setSelectedEmpNos([]);
         setToast({
           mode: 'success',
           title: '반려 완료',
@@ -109,14 +111,15 @@ const SignUpRequest = () => {
   }, [selectedEmpNos]);
 
   useEffect(() => {
-    const fetchSignUpRequests = async () => {
+    const fetchData = async () => {
       try {
-        const response = await instance.get<ApiResponse>('/api/v1/admin/approve-user');
+        const response = await fetchSignUpRequests();
+        setCount(response.data.data.totalElements);
         const { data } = response.data || {};
         if (data && Array.isArray(data.contents)) {
           setUserData(data.contents);
 
-          const formattedData = data.contents.map((item, index) => ({
+          const formattedData = data.contents.map((item: UserData, index: number) => ({
             번호: index + 1,
             체크박스: (
               <input
@@ -128,7 +131,7 @@ const SignUpRequest = () => {
             ),
             이름: item.name,
             사원번호: item.empNo,
-            연락처: item.phoneNum,
+            연락처: item.phoneNumber,
             이메일: item.email,
             가입요청일: item.signUpRequestDateTime,
             승인버튼: <button onClick={handleApprove}>승인</button>,
@@ -141,13 +144,13 @@ const SignUpRequest = () => {
       }
     };
 
-    fetchSignUpRequests();
+    fetchData();
   }, [handleApprove, handleReject, handleCheckboxChange, selectedEmpNos]);
 
   return (
     <div className="sign-up-request">
       <div className="sign-up-request__container">
-        <SearchBar>
+        <SearchBar totalCount={count}>
           <Tab styleName="hover" content="반려" onClick={handleReject} />
           <Tab styleName="active" content="승인" onClick={handleApprove} />
         </SearchBar>

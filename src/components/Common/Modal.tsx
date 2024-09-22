@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Button from './Button';
 import checkBox from '../../assets/checkbox-confirm-img.svg';
 import danger from '../../assets/icon-danger-modal.svg';
@@ -14,18 +13,9 @@ type ModalProps = {
   onClickTwo?: () => void;
 };
 
-type DecisionTypeModalProps = {
-  btnContentOne?: string;
-  btnContentTwo?: string;
-  selectedItem: number | null;
-  onItemClick: (index: number) => void;
-  onClickOne?: () => void;
-  onClickTwo?: () => void;
-};
-
 function one({ btnContentOne, onClickOne }: ModalProps) {
   return (
-    <Button type="button" state="default_gray" width="160px" height="48px" onClick={onClickOne}>
+    <Button type="button" state="default_gray" width="8.333vw" height="4.444vh" onClick={onClickOne}>
       {btnContentOne}
     </Button>
   );
@@ -34,11 +24,11 @@ function one({ btnContentOne, onClickOne }: ModalProps) {
 function twoRed({ btnContentOne, btnContentTwo, onClickOne, onClickTwo }: ModalProps) {
   return (
     <>
-      <Button type="button" state="default_gray" width="160px" height="48px" onClick={onClickOne}>
+      <Button type="button" state="default_gray" width="8.333vw" height="4.444vh" onClick={onClickOne}>
         {btnContentOne}
       </Button>
 
-      <Button type="button" state="danger" width="160px" height="48px" onClick={onClickTwo}>
+      <Button type="button" state="danger" width="8.333vw" height="4.444vh" onClick={onClickTwo}>
         {btnContentTwo}
       </Button>
     </>
@@ -48,11 +38,11 @@ function twoRed({ btnContentOne, btnContentTwo, onClickOne, onClickTwo }: ModalP
 function twoBlue({ btnContentOne, btnContentTwo, onClickOne, onClickTwo }: ModalProps) {
   return (
     <>
-      <Button type="button" state="default_gray" width="160px" height="48px" onClick={onClickOne}>
+      <Button type="button" state="default_gray" width="8.333vw" height="4.444vh" onClick={onClickOne}>
         {btnContentOne}
       </Button>
 
-      <Button type="button" state="default" width="160px" height="48px" onClick={onClickTwo}>
+      <Button type="button" state="default" width="8.333vw" height="4.444vh" onClick={onClickTwo}>
         {btnContentTwo}
       </Button>
     </>
@@ -79,61 +69,11 @@ function distributionConfirm({ btnContentOne, btnContentTwo, onClickOne, onClick
         </div>
       </div>
       <div className="distributionConfirm__btn-box">
-        <Button type="button" state="default_gray" width="102px" height="52px" onClick={onClickOne}>
+        <Button type="button" state="default_gray" width="5.313vw" height="4.815vh" onClick={onClickOne}>
           {btnContentOne}
         </Button>
         <div style={{ width: '12px' }} />
-        <Button type="button" state="default" width="102px" height="52px" onClick={onClickTwo}>
-          {btnContentTwo}
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-function decisionTypeModal({
-  btnContentOne,
-  btnContentTwo,
-  selectedItem,
-  onItemClick,
-  onClickOne,
-  onClickTwo,
-}: DecisionTypeModalProps) {
-  return (
-    <div className="decisionType">
-      <div className="decisionType__title">심의 결정 구분을 선택해주세요</div>
-      <div className="decisionType__type-box">
-        <div className="decisionType__type-box__type">
-          {['주의 및 경고', '광고 수정', '주의 경고 및 광고 수정'].map((item, index) => (
-            <div
-              key={index}
-              className={`decisionType__type-box__type-item ${
-                selectedItem === index ? 'decisionType__type-box__type-item-selected' : ''
-              }`}
-              onClick={() => onItemClick(index)}>
-              {item}
-            </div>
-          ))}
-        </div>
-        <div className="decisionType__type-box__type">
-          {['광고 중지', '관계기관 통보', '기각', '해당사항 없음'].map((item, index) => (
-            <div
-              key={index + 3}
-              className={`decisionType__type-box__type-item ${
-                selectedItem === index + 3 ? 'decisionType__type-box__type-item-selected' : ''
-              }`}
-              onClick={() => onItemClick(index + 3)}>
-              {item}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="decisionType__btn-box">
-        <Button type="button" state="default_gray" width="160px" height="48px" onClick={onClickOne}>
-          {btnContentOne}
-        </Button>
-        <div style={{ width: '12px' }} />
-        <Button type="button" state="default" width="160px" height="48px" onClick={onClickTwo}>
+        <Button type="button" state="default" width="5.313vw" height="4.815vh" onClick={onClickTwo}>
           {btnContentTwo}
         </Button>
       </div>
@@ -149,11 +89,11 @@ function delUserInfo({ btnContentOne, btnContentTwo, onClickOne, onClickTwo }: M
       <div className="delUserInfo__content">해당 사용자 정보는 삭제되며 복구되지 않습니다.</div>
       <div className="delUserInfo__content"> 해당 사용자를 삭제하시겠습니까?</div>
       <div className="delUserInfo__btn-box">
-        <Button type="button" state="default_gray" width="160px" height="48px" onClick={onClickOne}>
+        <Button type="button" state="default_gray" width="8.333vw" height="4.444vh" onClick={onClickOne}>
           {btnContentOne}
         </Button>
-        <div style={{ width: '12px' }} />
-        <Button type="button" state="danger" width="160px" height="48px" onClick={onClickTwo}>
+        <div style={{ width: '0.625vw' }} />
+        <Button type="button" state="danger" width="8.333vw" height="4.444vh" onClick={onClickTwo}>
           {btnContentTwo}
         </Button>
       </div>
@@ -175,21 +115,9 @@ function colorChange({ add, btnContentOne, btnContentTwo, onClickOne, onClickTwo
 }
 
 const Modal = ({ title, content, add, btnContentTwo, btnContentOne, mode, onClickOne, onClickTwo }: ModalProps) => {
-  const [selectedItem, setSelectedIndex] = useState<number | null>(null);
-
   function modalChange({ btnContentOne, btnContentTwo, mode, onClickOne, onClickTwo }: ModalProps) {
     if (mode === 'distribution') {
       return distributionConfirm({ btnContentOne, btnContentTwo, onClickOne, onClickTwo });
-    }
-    if (mode === 'decisionType') {
-      return decisionTypeModal({
-        btnContentOne,
-        btnContentTwo,
-        selectedItem,
-        onItemClick: setSelectedIndex,
-        onClickOne,
-        onClickTwo,
-      });
     }
 
     if (mode === 'delUserInfo') {

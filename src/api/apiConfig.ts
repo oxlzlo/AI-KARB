@@ -4,7 +4,7 @@ import axios from 'axios';
  * axios 인스턴스 생성
  */
 const instance = axios.create({
-  baseURL: 'https://neuroflow-fastcampus.store/',
+  baseURL: 'https://neuroflow-fastcampus.store',
 });
 
 export default instance;
