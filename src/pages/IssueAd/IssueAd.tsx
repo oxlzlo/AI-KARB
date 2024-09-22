@@ -17,6 +17,7 @@ type Advertisement = {
   advertiser: string;
   state: boolean;
   issue: boolean;
+  assigneeName: string;
 };
 
 type IssueAdList = {
@@ -97,7 +98,7 @@ const IssueAd = () => {
                 업종구분: Array.isArray(ad.category) ? ad.category.join(', ') : ad.category,
                 상품명: ad.product,
                 광고주: ad.advertiser,
-                담당자: '담당자',
+                담당자: ad.assigneeName,
                 진행상황: (
                   <ReviewTag
                     size="large"
