@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SearchBar from '../components/Common/SearchBar';
 import SearchInput from '../components/Common/SearchInput';
 import Filter from '../components/Common/Filter';
@@ -10,8 +11,9 @@ import doneTask from '../assets/icon-doneTask.svg';
 import notDoneTask from '../assets/icon-notDoneTask.svg';
 import ReviewTag from '../components/Common/ReviewTag';
 import { fetchMyTaskData } from '../api/user/userApi';
-import Spinner from '../components/Common/Spinner';
 import InfinityScroll from '../components/Common/InfinityScroll';
+import ProgressBar from '../components/ProgressBar';
+import { fetchLoadIssueAdDetail } from '../api/issueAd/issueAdApi';
 
 interface Advertisement {
   adId: string;
@@ -31,18 +33,24 @@ const MyTasks = () => {
   const [hasMore, setHasMore] = useState(true);
   const [isFetched, setIsFetched] = useState(false);
   const [count, setCount] = useState(0);
+  const [pValue, setPValue] = useState(0);
+
+  const navigate = useNavigate();
 
   const fetchTaskData = useCallback(async () => {
     if (!cursorId || isFetched) return;
 
     try {
       const response = await fetchMyTaskData(cursorId, taskData.length, cursorState);
-      console.log(response);
       const newTaskData = response.data.data.taskList.advertisementList;
       const newAdCount = response.data.data.adCount;
       const newCursorInfo = response.data.data.taskList.cursorInfo;
+      const myTotal = newAdCount.myTotalAd;
+      const myDone = newAdCount.myDoneAd;
+      const newGauageValue = Math.floor((myDone / myTotal) * 100);
+      setPValue(newGauageValue);
+
       setCount(newAdCount.myTotalAd);
-      console.log('새로 불러온 데이터:', newTaskData);
 
       setTaskData((prev) => [...prev, ...newTaskData]);
       setAdCount(newAdCount);
@@ -58,6 +66,21 @@ const MyTasks = () => {
   useEffect(() => {
     fetchTaskData();
   }, [fetchTaskData]);
+
+  const handleRowClick = (advertisementId: string | number | undefined) => {
+    if (typeof advertisementId === 'string') {
+      fetchLoadIssueAdDetail({ advertisementId })
+        .then((response) => {
+          const adDetails = response.data.data;
+          if (response.data.code === 3400) {
+            navigate('/issue-ad/result/', { state: { adDetails } });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
 
   return (
     <div className="myTasks">
@@ -85,10 +108,14 @@ const MyTasks = () => {
               </div>
               <img src={notDoneTask} alt="미완료 작업 수" />
             </div>
+            <div style={{ marginLeft: '36px' }}>
+              <div style={{ marginBottom: '11.5px' }}>진행률</div>
+              <ProgressBar width={16.667} height={15} progressGauge={pValue} className="mine" />
+            </div>
           </div>
         </div>
         <SearchBar totalCount={count}>
-          <SearchInput onChange={() => {}} placeholder="검색할거임" />
+          <SearchInput onChange={() => {}} placeholder="검색어를 2글자 이상 입력해주세요" />
           <TagFilter tag1="전체" tag2="지적" tag3="비지적" />
           <TagFilter tag1="전체" tag2="검수" tag3="검수완료" />
           <Filter />
@@ -138,6 +165,7 @@ const MyTasks = () => {
                   }))
                 : []
             }
+            onRowClick={(row) => handleRowClick(row.고유번호)}
           />
         </InfinityScroll>
       </div>

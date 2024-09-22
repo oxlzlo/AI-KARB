@@ -24,6 +24,8 @@ const Header = () => {
         return '대시보드';
       case '/same-ad':
         return '동일광고 목록';
+      case '/same-ad/result/':
+        return '동일광고 검수';
       case '/issue-ad':
         return '지적광고 목록';
       case '/issue-ad/result/':
@@ -39,13 +41,15 @@ const Header = () => {
       case '/admin/manage-task':
         return '작업 배분 관리';
       default:
-        return '헤더타이틀명';
+        return '404Page...';
     }
   }
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/signin');
+    localStorage.removeItem('selectedItem');
+    localStorage.removeItem('selectedSubItem');
+    navigate('/');
   };
 
   return (

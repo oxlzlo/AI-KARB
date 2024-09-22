@@ -7,9 +7,16 @@ import IssuedReason from '../../components/IssuedReason';
 import arrowDown from '../../assets/arrow-down.svg';
 import arrowUp from '../../assets/arrow-up.svg';
 import iconPlus from '../../assets/icon-plus.svg';
+import fileSearch from '../../assets/icon-file-search.svg';
+import Toast from '../../components/Common/Toast';
 import { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { fetchLoadIssueDecision, fetchLoadIssueProvision, postSaveNewIssueTask } from '../../api/issueAd/issueAdApi';
+import {
+  fetchLoadIssueDecision,
+  fetchLoadIssueProvision,
+  postSaveIssueDecision,
+  postSaveNewIssueTask,
+} from '../../api/issueAd/issueAdApi';
 
 type IssuedReasonType = {
   contentNumber: number;
@@ -47,6 +54,13 @@ const IssueAdResult = () => {
   const [reason, setReason] = useState<IssueOptionType[]>([]);
   const [issueDecisionData, setIssueDecisionData] = useState<DecisionDataType[]>([]);
   const [selectedItem, setSelectedItem] = useState<number | null>(null);
+  // const [toast, setToast] = useState<{ mode: 'success' | 'failed'; title: string; content: string } | null>(null);
+  const [toast, setToast] = useState({
+    mode: '',
+    title: '',
+    content: '',
+    isVisible: false,
+  });
 
   // 새로운 검토 의견 추가 관리
   const [newReason, setNewReason] = useState({
@@ -91,6 +105,7 @@ const IssueAdResult = () => {
 
     fetchLoadIssueDecision()
       .then((response) => {
+        console.log('심의결정 리스트', response);
         setIssueDecisionData(response.data.data.decisionList);
       })
       .catch((error) => {
@@ -173,17 +188,23 @@ const IssueAdResult = () => {
       provisionId: newReason.provisionId,
     };
 
-    setIssuedReasons((prevReasons) => [...prevReasons, newReasonToAdd]);
-    setNewIssuedReasons((prevNewReasons) => [...prevNewReasons, newReasonToAdd]);
+    setIssuedReasons((prevReasons) => {
+      const maxContentNumber = Math.max(...prevReasons.map((reason) => reason.contentNumber), 0);
+      const updatedReasons = [...prevReasons, { ...newReasonToAdd, contentNumber: maxContentNumber + 1 }];
 
-    setNewReason({
-      contentNumber: issuedReasons.length + 2,
-      articleNumber: 0,
-      articleTitle: '',
-      articleContent: '',
-      issuedReason: '',
-      provisionId: 0,
+      setNewReason({
+        contentNumber: maxContentNumber + 2,
+        articleNumber: 0,
+        articleTitle: '',
+        articleContent: '',
+        issuedReason: '',
+        provisionId: 0,
+      });
+
+      return updatedReasons;
     });
+
+    setNewIssuedReasons((prevNewReasons) => [...prevNewReasons, newReasonToAdd]);
   };
 
   // 검수 의견 삭제
@@ -203,6 +224,7 @@ const IssueAdResult = () => {
     setIssuedReasons(updatedReasons);
   };
 
+  // 임시저장
   const clickTemporarySaveBtn = () => {
     console.log('payload로 들어갈 issuedReasons', newIssuedReasons);
 
@@ -236,6 +258,49 @@ const IssueAdResult = () => {
       });
   };
 
+  // 심의 결정 완료
+  const saveIssueDecision = () => {
+    if (selectedItem === null) {
+      return;
+    }
+
+    const payload = {
+      advertisementId: adDetails?.id,
+      decisionId: issueDecisionData[selectedItem].id,
+    };
+
+    console.log('payload', payload);
+
+    postSaveIssueDecision(payload)
+      .then((response) => {
+        console.log('심의 결정 완료', response);
+
+        setIsModalOpen(false);
+
+        setToast({
+          mode: 'success',
+          title: '심의 결정 완료',
+          content: '심의 결정 저장이 완료되었습니다.',
+          isVisible: true,
+        });
+
+        setTimeout(() => {
+          navigate('/issue-ad');
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log('심의 결정 완료 실패', error);
+        setIsModalOpen(false);
+
+        setToast({
+          mode: 'failed',
+          title: '심의 결정 실패',
+          content: '심의 결정 저장에 실패하였습니다.',
+          isVisible: true,
+        });
+      });
+  };
+
   return (
     <main className="IssueAdResult">
       <article className="IssueAdResult__wrapperLeft">
@@ -243,7 +308,7 @@ const IssueAdResult = () => {
           <img src={arrowLeft} alt="뒤로가기 화살표" />
         </button>
         <div className="IssueAdResult__wrapperLeft_contents">
-          <ReviewAdNumber adNumber={adDetails?.id} />
+          <ReviewAdNumber adNumber={adDetails?.id} adTitle="검수 광고" imgSrc={fileSearch} />
           <AdInfoTable title1="상품명" title2="광고주" content1={adDetails?.product} content2={adDetails?.advertiser} />
           <AdInfoTable
             title1="업종구분"
@@ -454,14 +519,21 @@ const IssueAdResult = () => {
                 width="8.333vw"
                 height="4.444vh"
                 fontSize="0.781vw"
-                onClick={() => {
-                  setIsModalOpen(false);
-                }}>
+                onClick={saveIssueDecision}>
                 확인
               </Button>
             </div>
           </div>
         </div>
+      )}
+
+      {toast.isVisible && (
+        <Toast
+          mode={toast.mode === 'success' ? 'blue' : 'red'}
+          title={toast.title}
+          content={toast.content}
+          onClose={() => setToast({ ...toast, isVisible: false })}
+        />
       )}
     </main>
   );

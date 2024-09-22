@@ -47,6 +47,7 @@ const IssueAd = () => {
     fetchLoadIssueAdList(payload)
       .then((response) => {
         if (response.data.code === 3405) {
+          console.log('지적광고 리스트', response);
           setIssueAdData(response.data.data);
         }
       })
@@ -55,22 +56,23 @@ const IssueAd = () => {
       });
   }, []);
 
-  const handleRowClick = (advertisementId: string) => {
-    fetchLoadIssueAdDetail({ advertisementId })
-      .then((response) => {
-        const adDetails = response.data.data;
-        if (response.data.code === 3400) {
-          navigate('/issue-ad/result/', { state: { adDetails } });
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+  const handleRowClick = (advertisementId: string | undefined | number) => {
+    if (typeof advertisementId === 'string') {
+      fetchLoadIssueAdDetail({ advertisementId })
+        .then((response) => {
+          const adDetails = response.data.data;
+          if (response.data.code === 3400) {
+            navigate('/issue-ad/result/', { state: { adDetails } });
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
-
   return (
     <main className="issueAd">
-      <SearchBar totalCount={1079}>
+      <SearchBar totalCount={issueAdData?.totalElements || 0}>
         <SearchInput placeholder="검색어를 2글자 이상 입력해주세요" onChange={() => {}} />
         <TagFilter tag1="전체" tag2="지적" tag3="비지적" />
         <TagFilter tag1="전체" tag2="검수전" tag3="검수완료" />
@@ -102,9 +104,9 @@ const IssueAd = () => {
                 진행상황: (
                   <ReviewTag
                     size="large"
-                    containerBg={ad.state ? '#FFEDDA' : '#DEEEED'}
-                    circleBg={ad.state ? '#FFB566' : '#64ACA7'}
-                    content={ad.state ? '검수전' : '검수완료'}
+                    containerBg={ad.state ? '#DEEEED' : '#FFEDDA'}
+                    circleBg={ad.state ? '#64ACA7' : '#FFB566'}
+                    content={ad.state ? '검수완료' : '검수전'}
                   />
                 ),
                 지적비지적: (

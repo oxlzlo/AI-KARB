@@ -1,1 +1,1 @@
-README 작성 중!
+README 작성 중.
