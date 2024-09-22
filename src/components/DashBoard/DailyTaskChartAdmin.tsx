@@ -1,7 +1,8 @@
 import { ResponsiveBar } from '@nivo/bar';
 
 interface ChartProps {
-  data: [];
+  // data: [];
+  data: any;
 }
 
 const DailyTaskChartAdmin = ({ data }: ChartProps) => {
@@ -38,7 +39,7 @@ const DailyTaskChartAdmin = ({ data }: ChartProps) => {
             from: 'color',
             modifiers: [['opacity', 1]],
           }}
-          colors={({ index }) => {
+          colors={(index: string | number) => {
             return index === data.length - 1 ? '#83C5C1' : '#006597';
           }}
         />
