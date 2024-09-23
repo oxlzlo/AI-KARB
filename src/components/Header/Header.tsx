@@ -36,6 +36,8 @@ const Header = () => {
         return '가입 요청 관리';
       case '/admin/manage-user':
         return '회원 정보 관리';
+      case '/admin/manage-task-done':
+        return '작업 배분 관리'
       case '/admin/manage-emp':
         return '작업자 관리';
       case '/admin/manage-task':
