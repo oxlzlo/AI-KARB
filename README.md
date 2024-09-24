@@ -67,7 +67,8 @@
 
 ### 로그인/회원가입
 
-- 내용
+- 로그인, 회원가입 시 Id, password, phoneNumber, email의 양식을 지켜야해요❗️
+- 회원가입 시 모든 필드를 작성해야 회원가입 버튼이 활성화돼요❗️
 
 ![login](https://github.com/user-attachments/assets/2459e04a-3058-4950-98fd-1d8ea2118dc7)
 
@@ -77,7 +78,7 @@
 
 ### 아이디/비밀번호 변경
 
-- 내용
+- 단일 페이지에서 아이디 비밀번호 찾기 화면이 토글되어 보여주고 있어요❗️
 
 ![findid](https://github.com/user-attachments/assets/91863a59-fe41-4d79-980c-5f431e1dee13)
 
@@ -99,7 +100,7 @@
 
 ### 동일 광고
 
-- 내용
+- 동일광고와 비동일광고를 한눈에 알아볼 수 있어요❗️
 
 ![same](https://github.com/user-attachments/assets/b2e7386d-da52-4856-b6a6-e472bfc525ef)
 
@@ -107,7 +108,8 @@
 
 ### 지적 광고
 
-- 내용
+- 지적광고와 비지적광고를 한눈에 알아볼 수 있어요❗️
+- 심의 리뷰를 추가, 삭제할 수 있어요❗️
 
 ![issue](https://github.com/user-attachments/assets/eddb89b0-d44b-49ea-95e1-1947c820b480)
 
