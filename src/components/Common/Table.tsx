@@ -105,7 +105,7 @@ const Table = (props: EmpInfo) => {
                     {React.isValidElement(cellData) ? (
                       cellData
                     ) : column.name === '작업진척도' ? (
-                      <ProgressBar width={10.417} height={15} progressGauge={30} className="mine" />
+                      <ProgressBar width={14.417} height={15} progressGauge={30} className="mine" />
                     ) : column.name === '지적/비지적' ? (
                       cellData
                     ) : (

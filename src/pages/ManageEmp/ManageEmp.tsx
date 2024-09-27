@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Table, { EmpData } from '../../components/Common/Table';
 import SearchBar from '../../components/Common/SearchBar';
@@ -13,7 +13,7 @@ const ManageEmp = () => {
   const [totalAd, setTotalAd] = useState();
   const [totalElements, setTotalElements] = useState<number>(0);
 
-  const getEmpData = async () => {
+  const getEmpData = useCallback(async () => {
     const requestData = {
       cursorId: currentCursorId,
       sorted: 'EmpNo',
@@ -41,11 +41,11 @@ const ManageEmp = () => {
     } catch (error) {
       console.error('작업자 관리 정보 조회 실패:', error);
     }
-  };
+  }, [currentCursorId]);
 
   useEffect(() => {
     getEmpData();
-  });
+  }, [getEmpData]);
 
   const handleRowClick = (rowData: EmpData) => {
     if (rowData.사원번호) {
