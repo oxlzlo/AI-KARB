@@ -42,7 +42,7 @@ export interface EmpData {
   작업날짜?: string | number;
 }
 
-interface EmpInfo {
+export interface EmpInfo {
   columns: Column[];
   data: EmpData[];
   onRowClick?: (row: EmpData) => void;
