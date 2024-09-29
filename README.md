@@ -59,7 +59,7 @@
 
 ## 🎨 유저플로우
 
-<img width="2408" alt="userflow" src="https://github.com/user-attachments/assets/0ab5c6ed-c43d-417b-8a86-07c691133f9a">
+<img width="2408" alt="userflow" src="https://github.com/user-attachments/assets/1ce0debf-3c67-4093-9dc0-d398f7d2f2b9">
 
 <br>
 <br>
